@@ -3,71 +3,102 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GSAP Stagger Experiment</title>
+    <title>GSAP Thrown Text</title>
     <style>
         body {
-            font-family: 'Arial', sans-serif;
             margin: 0;
             height: 100vh;
+            /* Important: Hide scrollbars so the text can move outside the viewport */
+            overflow: hidden; 
+            background-color: #111; /* Dark background so text pops */
+            /* Helvetica Bold stack */
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            font-weight: 700;
+        }
+
+        .container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            /* Start everything dead center */
             display: flex;
             justify-content: center;
             align-items: center;
-            background-color: #111;
-            color: white;
-            overflow: hidden; /* Hide scrollbars during animation */
         }
 
-        .hero-container {
-            text-align: center;
-            max-width: 600px;
+        .thrown-text {
+            position: absolute;
+            /* Huge responsive size: 18% of the viewport width */
+            font-size: 18vw; 
+            color: #ffffff;
+            margin: 0;
+            line-height: 1;
+            white-space: nowrap; /* Keep it on one line */
+            user-select: none; /* Prevents highlighting while moving */
+            will-change: transform; /* Performance hint for the browser */
         }
 
-        h1 {
-            font-size: 4rem;
-            margin: 0 0 20px 0;
-            line-height: 1.1;
-            /* We start invisible in CSS too, just in case */
-            opacity: 0; 
-        }
-
-        p {
-            font-size: 1.2rem;
-            color: #888;
-            margin-bottom: 40px;
-            opacity: 0;
-        }
-
-        .btn {
-            padding: 15px 40px;
-            background-color: #4f46e5;
-            color: white;
-            text-decoration: none;
-            border-radius: 30px;
-            font-weight: bold;
-            opacity: 0;
-            display: inline-block;
+        /* Style for the extra "ghost" copies */
+        .cloned {
+            opacity: 0.15;
+            z-index: -1;
+            color: #4f46e5; /* A slight indigo tint for the ghosts */
         }
     </style>
 </head>
 <body>
 
-    <div class="hero-container">
-        <h1 class="animate-me">Hello<br>Developer.</h1>
-        <p class="animate-me">This interaction was built with 3 lines of GSAP.</p>
-        <a href="#" class="btn animate-me">Get Started</a>
+    <div class="container">
+        <h1 class="thrown-text">SYUKUR</h1>
+        
+        <h1 class="thrown-text cloned">SYUKUR</h1>
+        <h1 class="thrown-text cloned">SYUKUR</h1>
+        <h1 class="thrown-text cloned">SYUKUR</h1>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 
     <script>
-        // "gsap.from" means: Start at these values, and animate TO the default CSS values.
-        gsap.from(".animate-me", {
-            y: 50,          // Move 50px down
-            opacity: 0,     // Start invisible
-            duration: 1,    // Take 1 second
-            ease: "power3.out", // Smooth "brakes" at the end
-            stagger: 0.2    // Wait 0.2s between each element! (The magic sauce)
+        // Select all the text elements
+        const texts = document.querySelectorAll('.thrown-text');
+
+        // --- Initial Setup ---
+        // Center elements perfectly using GSAP so we don't need complex CSS transforms
+        gsap.set(texts, { xPercent: -50, yPercent: -50 });
+
+
+        // --- The Movement Function ---
+        function animateRandomly(target) {
+            // 1. Define random destinations based on viewport percentage (vw/vh)
+            // Using wide ranges (e.g., -50 to 150) allows them to fly slightly off-screen
+            const randomX = gsap.utils.random(-50, 150);
+            const randomY = gsap.utils.random(-50, 150);
+            
+            // 2. Define random rotation and duration
+            const randomRot = gsap.utils.random(-90, 90);
+            const randomTime = gsap.utils.random(3, 6); // Between 3 and 6 seconds per move
+
+            // 3. The Animation
+            gsap.to(target, {
+                x: randomX + "vw", // Move to random horizontal percentage
+                y: randomY + "vh", // Move to random vertical percentage
+                rotation: randomRot,
+                duration: randomTime,
+                ease: "sine.inOut", // Nice smooth swaying motion
+                
+                // THE CRUCIAL PART: When done, run this function again!
+                onComplete: animateRandomly, 
+                onCompleteParams: [target] // Pass the current element back into the function
+            });
+        }
+
+        // --- Start the Chaos ---
+        // Loop through each text element and start its independent animation loop
+        texts.forEach(text => {
+            // Add a small initial delay randomly so they don't all start moving at once
+            gsap.delayedCall(gsap.utils.random(0, 2), animateRandomly, [text]);
         });
+
     </script>
 
 </body>
