@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Character Counter</title>
+    <style>
+        body { font-family: sans-serif; padding: 50px; display: flex; justify-content: center; }
+        .container { width: 300px; }
+        
+        textarea {
+            width: 100%;
+            height: 100px;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            resize: none; /* Prevents user from stretching the box */
+        }
+
+        /* Color changes when typing */
+        textarea:focus { border-color: #007bff; outline: none; }
+
+        .counter {
+            text-align: right;
+            font-size: 14px;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        /* Warning color if near limit */
+        .limit-reached { color: red; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h3>Tweet Composer</h3>
+        <textarea id="myInput" placeholder="What's happening?"></textarea>
+        <div class="counter">
+            <span id="currentCount">0</span> / <span id="maxCount">140</span>
+        </div>
+    </div>
+
+    <script>
+        // 1. Select the elements we need to talk to
+        const inputField = document.getElementById('myInput');
+        const currentCountSpan = document.getElementById('currentCount');
+        const maxLimit = 140;
+
+        // 2. Add an 'Event Listener' (Waiting for the user to type)
+        inputField.addEventListener('input', function() {
+            
+            // Get the length of the text inside the box
+            const currentLength = inputField.value.length;
+            
+            // Update the number on screen
+            currentCountSpan.textContent = currentLength;
+
+            // 3. Add simple logic: Change color if they go over
+            if (currentLength > maxLimit) {
+                currentCountSpan.classList.add('limit-reached');
+            } else {
+                currentCountSpan.classList.remove('limit-reached');
+            }
+        });
+    </script>
+</body>
+</html>
