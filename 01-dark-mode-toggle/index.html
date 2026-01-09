@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dark Mode Experiment</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            transition: background 0.3s, color 0.3s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        /* Default Light Mode */
+        body.light { background-color: white; color: black; }
+        
+        /* Dark Mode Class */
+        body.dark { background-color: #222; color: white; }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            border: none;
+            background-color: #007bff;
+            color: white;
+        }
+    </style>
+</head>
+<body class="light">
+
+    <div style="text-align: center;">
+        <h1>Hello World!</h1>
+        <p>This is my first JS experiment.</p>
+        <button onclick="toggleTheme()">Toggle Dark Mode</button>
+    </div>
+
+    <script>
+        function toggleTheme() {
+            const body = document.body;
+            // If body has 'light', replace with 'dark', otherwise replace 'dark' with 'light'
+            if (body.classList.contains('light')) {
+                body.classList.remove('light');
+                body.classList.add('dark');
+            } else {
+                body.classList.remove('dark');
+                body.classList.add('light');
+            }
+        }
+    </script>
+</body>
+</html>
